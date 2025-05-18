@@ -2,6 +2,9 @@
 
 ## Features to add
  - Proper UI
- - Some Grid
  - Food
- - Length of snake
+ - Length of snake 
+ - **IMPORTANT FEATURES**
+    - Movement
+    - Food
+    - BEEG snake

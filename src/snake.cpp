@@ -1,5 +1,6 @@
 #include "snake.hpp"
 #include <iostream>
+#include <unistd.h>
 
 void Snake::Draw(int gridHeight, int gridWidth)
 {
@@ -13,9 +14,38 @@ void Snake::Draw(int gridHeight, int gridWidth)
 }
 void Snake::Move(int gridHeight, int gridWidth)
 {
-	if (x < gridWidth) 
+	// Input
+	char c;
+	read(STDIN_FILENO, &c, 1);
+
+	switch (c)
 	{
-		++x;
+		case 'a':
+			dir = direction::LEFT;
+		case 'd':
+			dir = direction::RIGHT;
+		case 's':
+			dir = direction::DOWN;
+		case 'w':
+			dir = direction::UP;
+	}
+
+	switch (dir) 
+	{
+		case direction::UP:
+			y--;
+			break;
+		case direction::DOWN:
+			y++;
+			break;
+		case direction::LEFT:
+			x--;
+			break;
+		case direction::RIGHT:
+			x++;
+			break;
+		default:
+			std::cout << "ERROR direction isn't a valid enum" << std::flush;
 	}
 }
 
