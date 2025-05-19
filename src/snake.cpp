@@ -14,6 +14,23 @@ void Snake::Draw(int gridHeight, int gridWidth)
 }
 void Snake::Move(int gridHeight, int gridWidth)
 {
+	if ( x > gridWidth || y > gridHeight)
+	{
+		if ( x > gridWidth)
+			x = 1;
+		if ( y > gridHeight)
+			y = 1;
+		return;
+	}
+	if (x < 1 || y < 1)
+	{	
+		if ( x < 1)
+			x = gridWidth;
+		if ( y < 1)
+			y = gridHeight;
+		return;
+	}
+
 	// Input
 	char c;
 	read(STDIN_FILENO, &c, 1);
@@ -22,12 +39,16 @@ void Snake::Move(int gridHeight, int gridWidth)
 	{
 		case 'a':
 			dir = direction::LEFT;
+			break;
 		case 'd':
 			dir = direction::RIGHT;
+			break;
 		case 's':
 			dir = direction::DOWN;
+			break;
 		case 'w':
 			dir = direction::UP;
+			break;
 	}
 
 	switch (dir) 
