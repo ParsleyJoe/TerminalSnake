@@ -13,3 +13,11 @@ Food::Food(int gridWidth, int gridHeight)
 	
 	std::cout << "Food Position: " << x << " " << y << std::endl;
 }
+
+void Food::Draw()
+{
+	int row = 4 + y;
+	int col = 1 + x;
+	std::cout << "\033[" << row << ";" << col << "H" << std::flush;
+	std::cout << "+" << std::flush;
+}

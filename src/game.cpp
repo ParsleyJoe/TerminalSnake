@@ -12,6 +12,7 @@ void Game::Draw()
 {
     DrawGrid();
     snake.Draw(gridWidth, gridHeight);
+    food.Draw();
 }
 
 void Game::GameOver()
