@@ -4,6 +4,8 @@
 void Game::Update()
 {
     snake.Move(gridHeight, gridWidth);
+    if (snake.CheckCollision(food.GetX(), food.GetY()))
+		food.Ate();
     if (!snake.isAlive())
         GameOver();
 }

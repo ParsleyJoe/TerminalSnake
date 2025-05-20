@@ -15,4 +15,6 @@ public:
 	void Draw(int gridWidth, int gridHeight);
 	void Move(int gridWidth, int gridHeight);
 	bool isAlive();
+	// x , y of colliding thing
+	bool CheckCollision(int otherX, int otherY);
 };

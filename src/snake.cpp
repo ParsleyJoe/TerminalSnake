@@ -74,3 +74,10 @@ bool Snake::isAlive()
 {
     return alive;
 }
+
+bool Snake::CheckCollision(int otherX, int otherY)
+{
+	if ( x == otherX && y == otherY)
+		return true;
+	return false;
+}
