@@ -5,9 +5,9 @@
  - Food
  - Length of snake 
  - **IMPORTANT FEATURES**
-    - Movement
-    - Food
-    - BEEG snake
+    - Movement [ * ]
+    - Food [ * ]
+    - BEEG snake [  ]
 
  - Less important features that make game cooler
     - fucked up input only accepted sometimes kinda wack bro
