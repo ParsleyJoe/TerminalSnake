@@ -33,5 +33,6 @@ public:
 	bool isAlive();
 	// x , y of colliding thing
 	bool CheckCollision(int otherX, int otherY);
+	bool BitItself();
 	void AddBody();
 };

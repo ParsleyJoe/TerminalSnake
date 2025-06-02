@@ -12,7 +12,7 @@ void Game::Update()
     	if (snake.CheckCollision(foods[i].GetX(), foods[i].GetY()))
 			foods[i].Ate();
 	}
-    if (!snake.isAlive())
+    if (snake.BitItself())
         GameOver();
 
     using namespace std::chrono_literals;
@@ -25,7 +25,7 @@ void Game::Update()
     // Calculate elapsed time	
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    if (duration >= 2000ms)
+    if (duration >= 10000ms)
     {
 		SpawnFood();
 		duration = 0ms;
@@ -54,7 +54,10 @@ void Game::Draw()
 void Game::GameOver()
 {
 	// TODO: Add Gameover logic
+	gameActive = false;
 }
+
+bool Game::isGameActive() {return gameActive;}
 
 void Game::DrawGrid()
 {

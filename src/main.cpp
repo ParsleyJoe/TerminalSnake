@@ -9,7 +9,7 @@
 #include "game.hpp"
 
 #define BOLDTEXT "\033[1;31mRed Text\033[0m\n"
-#define CLEARSCREEN std::cout << "\033[2J\033[1;1H" << std::flush;
+#define CLEARSCREEN "\033[2J\033[1;1H"
 
 struct termios origTermios;
 
@@ -59,11 +59,15 @@ int main()
 		game.Update();
 		
 		// "UI" should move this in a class or something
-		CLEARSCREEN;
+		std::cout << CLEARSCREEN << std::flush;
 		std::cout << "\033[1;31mASCII Snake\033[0m\n" << "\r\n";
 		std::cout << "Game" << "\r\n";
 
 		game.Draw();
+		if (!game.isGameActive())
+			break;
 	}
+
+	std::cout << CLEARSCREEN << "GAME OVER!" << std::endl;
 	return 0;
 }

@@ -10,10 +10,13 @@ private:
     const int gridWidth = 20;
     const int gridHeight = 20;
     std::vector<Food> foods;
+    bool gameActive = true;
 public:
     void Update();
     void Draw();
-    void GameOver();
     void DrawGrid();
     void SpawnFood();
+    void GameOver();
+    bool isGameActive();
+
 };

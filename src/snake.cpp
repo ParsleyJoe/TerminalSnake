@@ -118,19 +118,27 @@ void Snake::ChangeDir(char input)
 			{
 				// If changePos == vecPos dir != what it should be
 				vec.dir = changePos[i].dir;
+				Vector2& back = snakeBody.back();
+				if (changePos[i].x == back.x && changePos[i].y == back.y && changePos[i].dir == back.dir)
+				{
+					auto it = changePos.begin() + i;
+					changePos.erase(it);
+				}
 			}
 		}
 	}
 
-	// Clear changePos Vector if straight
+	// Clear changePos Vector2 if all segments of body "used" that vector2
 	bool equal = true;
-	for (int i = 0; i < snakeBody.size(); i++)
-	{
-		if (dir != snakeBody[i].dir)
-			equal = false;
-	}
-	if (equal)
-		changePos.clear();
+	//for (int i = 0; i < snakeBody.size(); i++)
+	//{
+	//Vector2 segement = snakeBody.back();
+	// Vector2 pos = changePos.back();
+	//if (snakeBody.back().dir != changePos.back().dir)
+	//	equal = false;
+	//}
+	//if (equal)
+		//changePos.clear();
 }
 
 void Snake::MoveBody(int gridWidth, int gridHeight)
@@ -161,7 +169,7 @@ void Snake::MoveBody(int gridWidth, int gridHeight)
 		{
 			if ( vec.x > gridWidth)
 				vec.x = 1;
-			if ( y > gridHeight)
+			if ( vec.y > gridHeight)
 				vec.y = 1;
 			return;
 		}
@@ -182,8 +190,19 @@ bool Snake::isAlive()
     return alive;
 }
 
+bool Snake::BitItself()
+{
+	for (Vector2& vec : snakeBody)
+	{
+		if (x == vec.x && y == vec.y)
+			return true;
+	}
+	return false;
+}
+
 bool Snake::CheckCollision(int otherX, int otherY)
 {
+	// Food
 	if ( x == otherX && y == otherY)
 	{
 		AddBody();
