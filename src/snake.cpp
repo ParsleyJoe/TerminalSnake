@@ -56,27 +56,8 @@ void Snake::Move(int gridHeight, int gridWidth)
 	// Input
 	char c;
 	read(STDIN_FILENO, &c, 1);
-
-	// input to change direction
-	switch (c)
-	{
-		case 'a':
-			dir = direction::LEFT;
-			changePos = {x, y, dir};
-			break;
-		case 'd':
-			dir = direction::RIGHT;
-			changePos = {x, y, dir};
-			break;
-		case 's':
-			dir = direction::DOWN;
-			changePos = {x, y, dir};
-			break;
-		case 'w':
-			dir = direction::UP;
-			changePos = {x, y, dir};
-			break;
-	}
+	ChangeDir(c);
+	
 
 	// Moves according to direction
 	switch (dir) 
@@ -100,16 +81,62 @@ void Snake::Move(int gridHeight, int gridWidth)
 	MoveBody(gridWidth, gridHeight);
 }
 
+// Change dir for body and head
+void Snake::ChangeDir(char input)
+{
+	// input to change direction
+	switch (input)
+	{
+		case 'a':
+		if (dir == direction::RIGHT) break;
+			dir = direction::LEFT;
+			changePos.push_back({x, y, dir});
+			break;
+		case 'd':
+		if (dir == direction::LEFT) break;
+			dir = direction::RIGHT;
+			changePos.push_back({x, y, dir});
+			break;
+		case 's':
+		if (dir == direction::UP) break;
+			dir = direction::DOWN;
+			changePos.push_back({x, y, dir});
+			break;
+		case 'w':
+		if (dir == direction::DOWN) break;
+			dir = direction::UP;
+			changePos.push_back({x, y, dir});
+			break;
+	}
+
+	// Change bodies direction while not breaking
+	for (Vector2& vec : snakeBody)
+	{
+		for (int i = 0; i < changePos.size(); i++)
+		{
+			if (changePos[i].x == vec.x && changePos[i].y == vec.y && vec.dir != changePos[i].dir)
+			{
+				// If changePos == vecPos dir != what it should be
+				vec.dir = changePos[i].dir;
+			}
+		}
+	}
+
+	// Clear changePos Vector if straight
+	bool equal = true;
+	for (int i = 0; i < snakeBody.size(); i++)
+	{
+		if (dir != snakeBody[i].dir)
+			equal = false;
+	}
+	if (equal)
+		changePos.clear();
+}
+
 void Snake::MoveBody(int gridWidth, int gridHeight)
 {
 	for (Vector2& vec : snakeBody)
 	{
-
-		if (vec.x == changePos.x && vec.y == changePos.y && vec.dir != dir)
-		{
-			vec.dir = dir;
-		}
-
 		switch(vec.dir)
 		{
 			case direction::DOWN:
@@ -124,6 +151,27 @@ void Snake::MoveBody(int gridWidth, int gridHeight)
 			case direction::RIGHT:
 				++vec.x;
 				break;
+		}
+	}
+
+	// Limit movement "From one side to another"
+	for (Vector2& vec : snakeBody)
+	{
+		if ( vec.x > gridWidth || vec.y > gridHeight)
+		{
+			if ( vec.x > gridWidth)
+				vec.x = 1;
+			if ( y > gridHeight)
+				vec.y = 1;
+			return;
+		}
+		if (vec.x < 1 || vec.y < 1)
+		{	
+			if ( vec.x < 1)
+				vec.x = gridWidth;
+			if ( vec.y < 1)
+				vec.y = gridHeight;
+			return;
 		}
 	}
 }

@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "food.hpp"
 #include <iostream>
 #include <chrono>
 
@@ -6,26 +7,48 @@ void Game::Update()
 {
     snake.Move(gridWidth, gridHeight);
 
-    if (snake.CheckCollision(food.GetX(), food.GetY()))
-		food.Ate();
+	for (int i = 0; i < foods.size(); i++)
+	{
+    	if (snake.CheckCollision(foods[i].GetX(), foods[i].GetY()))
+			foods[i].Ate();
+	}
     if (!snake.isAlive())
         GameOver();
 
-    // // Record start time
-    // auto start = std::chrono::high_resolution_clock::now();
+    using namespace std::chrono_literals;
+    // Record start time
+    static auto start = std::chrono::high_resolution_clock::now();
 
-    // // Record end time
-    // auto end = std::chrono::high_resolution_clock::now();
+    // Record end time
+    auto end = std::chrono::high_resolution_clock::now();
 
-    // // Calculate elapsed time	
-    // auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    // Calculate elapsed time	
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    if (duration >= 2000ms)
+    {
+		SpawnFood();
+		duration = 0ms;
+		start = std::chrono::high_resolution_clock::now();
+    }
+    
 }
+
+void Game::SpawnFood()
+{
+	Food food = Food(gridWidth, gridHeight);
+	foods.push_back(food);
+}
+
 
 void Game::Draw()
 {
     DrawGrid();
     snake.Draw(gridWidth, gridHeight);
-    food.Draw();
+    for (Food& food : foods)
+	{
+		food.Draw();
+	}
 }
 
 void Game::GameOver()

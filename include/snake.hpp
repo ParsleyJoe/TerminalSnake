@@ -20,13 +20,14 @@ private:
 	direction dir = direction::RIGHT;
 	bool alive = true;
 	std::vector<Vector2> snakeBody;
-	Vector2 changePos;
+	std::vector<Vector2> changePos; // probably wrong but ey man
 
 public:
 	Snake();
 
 	void Draw(int gridWidth, int gridHeight);
 	void DrawBody();
+	void ChangeDir(char input);
 	void Move(int gridWidth, int gridHeight);
 	void MoveBody(int gridWidth, int gridHeight);
 	bool isAlive();
