@@ -3,14 +3,17 @@
 #include <iostream>
 #include <chrono>
 
-void Game::Update()
+void Game::Update(int* score)
 {
     snake.Move(gridWidth, gridHeight);
 
 	for (int i = 0; i < foods.size(); i++)
 	{
-    	if (snake.CheckCollision(foods[i].GetX(), foods[i].GetY()))
+    		if (snake.CheckCollision(foods[i].GetX(), foods[i].GetY()))
+		{
 			foods[i].Ate();
+			*score += 10;
+		}
 	}
     if (snake.BitItself())
         GameOver();

@@ -12,7 +12,7 @@ private:
     std::vector<Food> foods;
     bool gameActive = true;
 public:
-    void Update();
+    void Update(int* score);
     void Draw();
     void DrawGrid();
     void SpawnFood();

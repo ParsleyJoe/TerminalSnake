@@ -12,6 +12,7 @@
 #define CLEARSCREEN "\033[2J\033[1;1H"
 
 struct termios origTermios;
+static int score;
 
 void die(const char *s)
 {
@@ -56,7 +57,7 @@ int main()
 		// Sleep so drawing isn't too fast
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-		game.Update();
+		game.Update(&score);
 		
 		// "UI" should move this in a class or something
 		std::cout << CLEARSCREEN << std::flush;
@@ -68,6 +69,6 @@ int main()
 			break;
 	}
 
-	std::cout << CLEARSCREEN << "GAME OVER!" << std::endl;
+	std::cout << CLEARSCREEN << "GAME OVER!\t" << "score: "  << score << std::endl;
 	return 0;
 }
