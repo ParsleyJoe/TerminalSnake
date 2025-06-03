@@ -14,5 +14,5 @@ will fix when I find a solution
 mkdir out
 cd out
 cmake ..
-cmake --build
+cmake --build .
 ```
