@@ -1,14 +1,16 @@
 #pragma once
 
+#include "snake.hpp"
 class Food
 {
 private:
 	int x;
 	int y;
-	bool eaten = false;
 public:
-	// Generate position in constructor
-	Food(int gridWidth, int gridHeight);
+
+	// public for deleting in vector<food> foods
+	bool eaten = false;
+	Food(Vector2& vec);
 	void Draw();
 	int GetX();
 	int GetY();

@@ -30,4 +30,5 @@ public:
 	void AddBody();
 	void BitItself(Vector2& newHead);
 	bool isAlive();
+	bool isPositionFree(Vector2& vec); 
 };

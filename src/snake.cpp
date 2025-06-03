@@ -162,3 +162,15 @@ bool Snake::isAlive()
 {
 	return alive;
 }
+
+bool Snake::isPositionFree(Vector2& vec)
+{
+
+	for (int i = 0; i < snakeBody.size(); i++)
+	{
+		if (vec.x == snakeBody[i].x && vec.y == snakeBody[i].y)
+			return true;
+	}
+
+	return false;
+}

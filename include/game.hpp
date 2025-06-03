@@ -18,5 +18,6 @@ public:
     void SpawnFood();
     void GameOver();
     bool isGameActive();
+    Vector2 GetRandomPos();
 
 };
