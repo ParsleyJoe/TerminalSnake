@@ -4,206 +4,110 @@
 
 Snake::Snake()
 {
-	// start with 3 total segments (head included)
 	AddBody();
 	AddBody();
+	AddBody();
+
 }
 
-void Snake::Draw(int gridWidth, int gridHeight)
+void Snake::Draw()
 {
-	// 4 and 1 get to first * printed in grid so
-	// the first * printed is 0, 0 (origin)
-	int row = 4 + y;
-	int col = 1 + x;
-	std::cout << "\033[" << row << ";" << col << "H" << std::flush;
-
-	std::cout << "#" << std::flush;
-	DrawBody();
-}
-
-void Snake::DrawBody()
-{
-	for (int i = 0; i < snakeBody.size(); ++i)
+	for (int i = 0; i < snakeBody.size(); i++)
 	{
-		std::cout << "\033[H" << std::flush;
 		int row = 4 + snakeBody[i].y;
 		int col = 1 + snakeBody[i].x;
+	
+
 		std::cout << "\033[" << row << ";" << col << "H" << std::flush;
 		std::cout << "#" << std::flush;
 	}
 }
 
-void Snake::Move(int gridHeight, int gridWidth)
+void Snake::Move(int gridWidth, int gridHeight)
 {
-	// "Limit Movement"
-	if ( x > gridWidth || y > gridHeight)
+	Vector2 newHead = {0};
+	if (!snakeBody.empty())
+		newHead = snakeBody.back();
+	else
 	{
-		if ( x > gridWidth)
-			x = 1;
-		if ( y > gridHeight)
-			y = 1;
-		return;
-	}
-	if (x < 1 || y < 1)
-	{	
-		if ( x < 1)
-			x = gridWidth;
-		if ( y < 1)
-			y = gridHeight;
+		std::cerr << "Unexpected Error SnakeBody Empty" << std::endl;
 		return;
 	}
 
-	// Input
-	char c;
-	read(STDIN_FILENO, &c, 1);
-	ChangeDir(c);
-	
-
-	// Moves according to direction
-	switch (dir) 
+	Input();
+	switch(dir)
 	{
-		case direction::UP:
-			y--;
-			break;
 		case direction::DOWN:
-			y++;
+			newHead.y++;
+			break;
+		case direction::UP:
+			newHead.y--;
 			break;
 		case direction::LEFT:
-			x--;
+			newHead.x--;
 			break;
 		case direction::RIGHT:
-			x++;
-			break;
-		default:
-			std::cout << "ERROR direction isn't a valid enum" << std::flush;
+			newHead.x++;
 			break;
 	}
-	MoveBody(gridWidth, gridHeight);
+
+	// "Limit Movement"
+	if ( newHead.x > gridWidth || newHead.y > gridHeight)
+	{
+		if ( newHead.x > gridWidth)
+			newHead.x = 1;
+		if ( newHead.y > gridHeight)
+			newHead.y = 1;
+	}
+	if (newHead.x < 1 || newHead.y < 1)
+	{	
+		if ( newHead.x < 1)
+			newHead.x = gridWidth;
+		if ( newHead.y < 1)
+			newHead.y = gridHeight;
+	}
+	snakeBody.pop_front();
+	BitItself(newHead);
+	snakeBody.push_back(newHead);
+
 }
 
-// Change dir for body and head
-void Snake::ChangeDir(char input)
+void Snake::Input()
 {
-	// input to change direction
-	switch (input)
+	char c;
+	read(STDIN_FILENO, &c, 1);
+
+	switch (c) 
 	{
-		case 'a':
-		if (dir == direction::RIGHT) break;
-			dir = direction::LEFT;
-			changePos.push_back({x, y, dir});
-			break;
-		case 'd':
-		if (dir == direction::LEFT) break;
-			dir = direction::RIGHT;
-			changePos.push_back({x, y, dir});
-			break;
 		case 's':
-		if (dir == direction::UP) break;
+		if (dir == direction::UP) {return;}
 			dir = direction::DOWN;
-			changePos.push_back({x, y, dir});
 			break;
 		case 'w':
-		if (dir == direction::DOWN) break;
+		if (dir == direction::DOWN) {return;}
 			dir = direction::UP;
-			changePos.push_back({x, y, dir});
+			break;
+		case 'a':
+		if (dir == direction::RIGHT) {return;}
+			dir = direction::LEFT;
+			break;
+		case 'd':
+		if (dir == direction::LEFT) {return;}
+			dir = direction::RIGHT;
 			break;
 	}
 
-	// Change bodies direction while not breaking
-	for (Vector2& vec : snakeBody)
-	{
-		for (int i = 0; i < changePos.size(); i++)
-		{
-			if (changePos[i].x == vec.x && changePos[i].y == vec.y && vec.dir != changePos[i].dir)
-			{
-				// If changePos == vecPos dir != what it should be
-				vec.dir = changePos[i].dir;
-				Vector2& back = snakeBody.back();
-				if (changePos[i].x == back.x && changePos[i].y == back.y && changePos[i].dir == back.dir)
-				{
-					auto it = changePos.begin() + i;
-					changePos.erase(it);
-				}
-			}
-		}
-	}
-
-	// Clear changePos Vector2 if all segments of body "used" that vector2
-	bool equal = true;
-	//for (int i = 0; i < snakeBody.size(); i++)
-	//{
-	//Vector2 segement = snakeBody.back();
-	// Vector2 pos = changePos.back();
-	//if (snakeBody.back().dir != changePos.back().dir)
-	//	equal = false;
-	//}
-	//if (equal)
-		//changePos.clear();
 }
 
-void Snake::MoveBody(int gridWidth, int gridHeight)
+bool Snake::CheckFoodCollision(int otherX, int otherY)
 {
-	for (Vector2& vec : snakeBody)
-	{
-		switch(vec.dir)
-		{
-			case direction::DOWN:
-				++vec.y;
-				break;
-			case direction::UP:
-				--vec.y;
-				break;
-			case direction::LEFT:
-				--vec.x;
-				break;
-			case direction::RIGHT:
-				++vec.x;
-				break;
-		}
-	}
+	Vector2 head;
+	if (!snakeBody.empty())
+		head = snakeBody.back();
+	else
+		std::cerr << "BODY Empty, IN checkfoodCollision" << std::endl;
 
-	// Limit movement "From one side to another"
-	for (Vector2& vec : snakeBody)
-	{
-		if ( vec.x > gridWidth || vec.y > gridHeight)
-		{
-			if ( vec.x > gridWidth)
-				vec.x = 1;
-			if ( vec.y > gridHeight)
-				vec.y = 1;
-			return;
-		}
-		if (vec.x < 1 || vec.y < 1)
-		{	
-			if ( vec.x < 1)
-				vec.x = gridWidth;
-			if ( vec.y < 1)
-				vec.y = gridHeight;
-			return;
-		}
-	}
-}
-
-
-bool Snake::isAlive()
-{
-    return alive;
-}
-
-bool Snake::BitItself()
-{
-	for (Vector2& vec : snakeBody)
-	{
-		if (x == vec.x && y == vec.y)
-			return true;
-	}
-	return false;
-}
-
-bool Snake::CheckCollision(int otherX, int otherY)
-{
-	// Food
-	if ( x == otherX && y == otherY)
+	if (head.x == otherX && head.y == otherY)
 	{
 		AddBody();
 		return true;
@@ -213,23 +117,48 @@ bool Snake::CheckCollision(int otherX, int otherY)
 
 void Snake::AddBody()
 {
-	Vector2 end = Vector2 {x, y, dir};
+	Vector2 tail;
 	if (!snakeBody.empty())
-		end = snakeBody.back();
+		tail = snakeBody.front();
 
-	switch(end.dir)
+	switch(tail.dir)
 	{
 		case direction::DOWN:
-			snakeBody.push_back(Vector2{end.x, end.y - 1, end.dir});
+			tail.y++;
 			break;
 		case direction::UP:
-			snakeBody.push_back(Vector2{end.x, end.y + 1, end.dir});
+			tail.y--;
 			break;
 		case direction::LEFT:
-			snakeBody.push_back(Vector2{end.x + 1, end.y, end.dir});
+			tail.x--;
 			break;
 		case direction::RIGHT:
-			snakeBody.push_back(Vector2{end.x - 1, end.y, end.dir});
+			tail.x++;
 			break;
 	}
+	snakeBody.push_front(tail);
+}
+
+void Snake::BitItself(Vector2& newHead)
+{
+	Vector2 head = {0};
+	if (!snakeBody.empty())
+		head = snakeBody.back();
+	else
+	{
+		std::cerr << "Unexpected Error SnakeBody Empty" << std::endl;
+	}
+
+	for (int i = 1; i < snakeBody.size(); i++)
+	{
+		if (newHead.x == snakeBody[i].x && newHead.y == snakeBody[i].y)
+		{
+			alive = false;
+		}
+	}
+}
+
+bool Snake::isAlive()
+{
+	return alive;
 }

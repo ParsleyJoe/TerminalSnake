@@ -9,13 +9,13 @@ void Game::Update(int* score)
 
 	for (int i = 0; i < foods.size(); i++)
 	{
-    		if (snake.CheckCollision(foods[i].GetX(), foods[i].GetY()))
+    	if (snake.CheckFoodCollision(foods[i].GetX(), foods[i].GetY()))
 		{
-			foods[i].Ate();
-			*score += 10;
+		 	foods[i].Ate();
+		 	*score += 10;
 		}
 	}
-    if (snake.BitItself())
+    if (!snake.isAlive())
         GameOver();
 
     using namespace std::chrono_literals;
@@ -47,7 +47,7 @@ void Game::SpawnFood()
 void Game::Draw()
 {
     DrawGrid();
-    snake.Draw(gridWidth, gridHeight);
+    snake.Draw();
     for (Food& food : foods)
 	{
 		food.Draw();
